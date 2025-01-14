@@ -1,0 +1,22 @@
+version: "3"
+name: "mysql_db"
+
+services:
+  db:
+    image: mysql:8.0
+    ports: 
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_USERNAME=peter001019
+      - MYSQL_PASSWORD=admin123
+      - MYSQL_DATABASE=istory
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - kind
+
+networks:
+  kind:
+    name: "kind"
+    external: true
