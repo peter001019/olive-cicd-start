@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istory
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: istory
+  template:
+    metadata:
+      labels:
+        app: istory
+    spec:
+      volumes:
+        - name: application-config
+          configMap:
+            name: istory-app-config
+      # initContainers:
+      #   - name: check-mysql-ready
+      #     image: mysql:8.0
+      #     env:
+      #       - name: MYSQL_PASSWORD
+      #         valueFrom:
+      #           secretKeyRef:
+      #             name: istory-db-secret
+      #             key: MYSQL_PASSWORD
+      #     command: ['sh', #MYSQL client에 명령어 실행
+      #               '-c',
+      #               'until mysqladmin ping -u dangtong -p${MYSQL_PASSWORD} -h mysql-svc.default; do echo waiting for database; sleep 2; done;']
+      containers:
+      - name: istory
+        image: dangtong76/istory
+        envFrom: #파일 전체를 사용
+          - configMapRef: #configMap 사용
+              name: istory-app-config
+        env:
+          - name: spring.datasource.password #password는 secret 사용
+            valueFrom:
+              secretKeyRef:
+                name: istory-db-secret
+                key: MYSQL_PASSWORD
+          - name: spring.datasource.username #username은 config 사용
+            valueFrom:
+              configMapKeyRef:
+                name: istory-db-config
+                key: MYSQL_USER
+        readinessProbe:
+          httpGet:
+            path: /actuator  #spring boot의 healthcheck 경로
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          successThreshold: 2
+          failureThreshold: 3
+          periodSeconds: 10
+        ports:
+        - containerPort: 8080
