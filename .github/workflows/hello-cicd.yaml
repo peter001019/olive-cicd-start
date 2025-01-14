@@ -1,5 +1,5 @@
-name: first-workflow
-on: [push]
+name: first-workflow #workflow 이름
+on: [push] #실행 조건
 
 jobs: 
   shell-cmd-job:
