@@ -5,4 +5,4 @@ USER istory
 WORKDIR /home/istory
 COPY springbootdeveloper-0.0.1-SNAPSHOT.jar /home/istory/istory.jar
 ENTRYPOINT ["java","-jar","/home/istory/istory.jar"]
-# docker run p 8080:8080 -e JAVA_OPTIONS="--Xms1024m --Xmx1024"
+# docker run p 8080:8080 -e JAVA_OPTIONS="--Xms1024m --Xmx1024"s
